@@ -81,23 +81,7 @@ public class GamePanel extends JPanel{
         for (int row = 0; row < MAP_HEIGHT; row++) {
             for (int col = 0; col < MAP_WIDTH; col++) {
                 int tileType = tileMap[row][col];
-                if(tileType == 0){
-                    BufferedImage tileImage = tiles[tileType];
-                    g.drawImage(tileImage, col * TILE_SIZE, row * TILE_SIZE, null);
-                }
-                if(tileType == 1){
-                    BufferedImage tileImage = tiles[tileType];
-                    g.drawImage(tileImage, col * TILE_SIZE, row * TILE_SIZE, null);
-                }
-                if(tileType == 2){
-                    BufferedImage tileImage = tiles[tileType];
-                    g.drawImage(tileImage, col * TILE_SIZE, row * TILE_SIZE, null);
-                }
-                if(tileType == 3){
-                    BufferedImage tileImage = tiles[tileType];
-                    g.drawImage(tileImage, col * TILE_SIZE, row * TILE_SIZE, null);
-                }
-                if(tileType == 4){
+                if(tileType == 0 || tileType == 1 || tileType == 2 || tileType == 3 || tileType == 4){
                     BufferedImage tileImage = tiles[tileType];
                     g.drawImage(tileImage, col * TILE_SIZE, row * TILE_SIZE, null);
                 }
