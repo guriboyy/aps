@@ -38,20 +38,10 @@ public class GamePanel extends JPanel{
         Utility scaleImage = new Utility();
 
         try {
-            tiles[0] = ImageIO.read(new File("assets\\tile0.png"));
-            tiles[0]  = scaleImage.scaleImage(tiles[0], TILE_SIZE, TILE_SIZE);
-
-            tiles[1] = ImageIO.read(new File("assets\\tile1.png"));
-            tiles[1]  = scaleImage.scaleImage(tiles[1], TILE_SIZE, TILE_SIZE);
-
-            tiles[2] = ImageIO.read(new File("assets\\tile2.png"));
-            tiles[2]  = scaleImage.scaleImage(tiles[2], TILE_SIZE, TILE_SIZE);
-
-            tiles[3] = ImageIO.read(new File("assets\\tile3.png"));
-            tiles[3]  = scaleImage.scaleImage(tiles[3], TILE_SIZE, TILE_SIZE);
-
-            tiles[4] = ImageIO.read(new File("assets\\tile4.png"));
-            tiles[4]  = scaleImage.scaleImage(tiles[4], TILE_SIZE, TILE_SIZE);
+            for(int i = 0; i < tiles.length; i++){
+                tiles[i] = ImageIO.read(new File("assets\\tile"+i+".png"));
+                tiles[i] = scaleImage.scaleImage(tiles[i], TILE_SIZE, TILE_SIZE);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
