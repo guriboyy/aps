@@ -12,6 +12,7 @@ public class WindowGame extends JFrame {
         setLocationRelativeTo(null);
         //add(new BackgroundGame());
         GamePanel gamePanel = new GamePanel();
+        gamePanel.setLayout(null);
         add(gamePanel);
         setVisible(true);
     }
