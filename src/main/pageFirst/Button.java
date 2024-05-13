@@ -1,6 +1,8 @@
 package main.pageFirst;
 
 import main.game.WindowGame;
+import main.pageAboutKeyboard.WindowKeyboard;
+import main.pageRules.WindowRule;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,11 +45,13 @@ public class Button extends JButton {
     }
 
     private void keyboard(ActionEvent action){
-        System.out.println("Teclado");
+        parentFrame.dispose();
+        new WindowKeyboard();
     }
 
     private void rules(ActionEvent action){
-        System.out.println("Regras");
+        parentFrame.dispose();
+        new WindowRule();
     }
 
 }

@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class Firstpage extends JFrame {
     public Firstpage(){
-        setTitle("GameEcology");
+        setTitle("Recycle Rush");
         setResizable(false);
         setSize(1223,880);
         setDefaultCloseOperation(EXIT_ON_CLOSE);

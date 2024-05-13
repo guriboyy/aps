@@ -10,8 +10,7 @@ public class WindowGame extends JFrame {
         setSize(1223,880);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        //add(new BackgroundGame());
-        GamePanel gamePanel = new GamePanel();
+        GamePanel gamePanel = new GamePanel(this);
         gamePanel.setLayout(null);
         add(gamePanel);
         setVisible(true);

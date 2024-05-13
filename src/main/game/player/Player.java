@@ -1,12 +1,12 @@
 package main.game.player;
-
+import java.util.List;
 import main.game.Sprite;
-
-import javax.swing.*;
+import main.objects.NotRecyclable;
+import main.objects.Recyclable;
+import main.objects.TrashObject;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 public class Player {
     public int x,y,dx,dy;
@@ -24,6 +24,8 @@ public class Player {
     private int frameIndex;
     private long lastFrameTime;
     private int animationSpeed = 100; // tempo em milissegundos
+    private int health = 3;
+    private int points = 0;
 
     private boolean playerIsMoving = false;
     private boolean facingRight, isMovingRight, isMovingLeft = false;
@@ -39,7 +41,9 @@ public class Player {
     private int a;
     private int d;
 
-    public Player(int x,int y,boolean isLeftKeyboard,int[][] tileMap) {
+    private boolean isMan;
+
+    public Player(boolean isMan,int x,int y,boolean isLeftKeyboard,int[][] tileMap) {
         this.x = x;
         this.y = y;
         this.isLeftKeyboard = isLeftKeyboard;
@@ -47,17 +51,20 @@ public class Player {
         this.a = isLeftKeyboard ? KeyEvent.VK_A : KeyEvent.VK_LEFT;
         this.d = isLeftKeyboard ? KeyEvent.VK_D : KeyEvent.VK_RIGHT;
 
+        this.isMan = isMan;
+
+
         hitbox = new Rectangle(x,y,110,109);
         this.tileMap = tileMap;
-        sprite = new Sprite("assets\\Run.png", 200, 109); // Supondo que cada frame tem 71x100 pixels
+        String sexo = isMan ?  "Homem" : "Mulher";
+        sprite = new Sprite("assets\\Run"+ sexo +".png", 200, 109); // Supondo que cada frame tem 71x100 pixels
         currentFrame = sprite.getSprite(0, 0); // Começa com o primeiro frame
 
-        spriteStop = new Sprite("assets\\Idle.png", 200, 109); // Supondo que cada frame tem 71x100 pixels
+        spriteStop = new Sprite("assets\\Idle"+ sexo +".png", 200, 109); // Supondo que cada frame tem 71x100 pixels
         stopImg = spriteStop.getSprite(0, 0); // Começa com o primeiro frame
     }
 
     public void draw(Graphics2D g2){
-        System.out.println("idle "+ idleTime);
         if(!playerIsMoving && System.currentTimeMillis() - idleTime > MAX_IDLETIME){
             g2.drawImage(stopImg, x, y, 200, 109, null);
 
@@ -69,15 +76,6 @@ public class Player {
                 g2.drawImage(currentFrame, x + 200, y, -200, 109, null);
             }
         }
-
-        // Desenha o jogador
-       // Assume que o tamanho do jogador é 100x100
-
-        // Desenha o hitbox em uma cor diferente para visibilidade
-        g2.setColor(Color.RED);  // Cor vermelha para o hitbox
-        g2.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
-        // Desenha apenas o contorno do hitbox
-        //g2.drawImage(currentFrame, x, y, null);
     }
 
     public void update() {
@@ -160,6 +158,77 @@ public class Player {
         }
 
     }
+
+    public void loseHealth(){
+        this.health -= 1;
+    }
+    public int getHealth(){
+        return health;
+    }
+
+    public void addPoints(){
+        this.points += 1;
+    }
+    public int getPoints(){
+        return points;
+    }
+    public void checkCollision(List<TrashObject> objects, List<Integer> objectsPositions) {
+        Rectangle playerRect = new Rectangle(x, y, 110, 109); // Use as dimensões do hitbox do jogador
+
+        for (TrashObject obj : objects) {
+            if(obj.isCollided){
+                continue;
+            }
+            Rectangle objRect = new Rectangle(obj.getX(), obj.getY(), obj.width, obj.height);
+            if (playerRect.intersects(objRect)) {
+                if (obj instanceof Recyclable) {
+                    addPoints(); // Ganha pontos se for reciclável
+                } else if (obj instanceof NotRecyclable) {
+                    loseHealth(); // Perde vida se não for reciclável
+                }
+                obj.setVisivel(false); // Definir visibilidade do objeto como falso
+                obj.isCollided = true;// Remove o objeto do jogo
+                int newPosition = getValidPosition(objectsPositions, 100); // Limite de 100 tentativas
+                if(newPosition == -1){
+                    newPosition = (int) (Math.random() * 1207);
+                }
+                obj.setTimer(newPosition);
+            }
+        }
+    }
+
+    public int getValidPosition(List<Integer> objectsPositions, int maxTries) {
+        int x;
+        boolean validPosition;
+        int tries = 0;
+
+        do {
+            validPosition = true; // Assume que a posição é válida até prova em contrário
+            x = (int) (Math.random() * 1207);
+
+            // Verifica se a nova posição está muito próxima de alguma posição já ocupada
+            for (Integer pos : objectsPositions) {
+                if (Math.abs(pos - x) < 40) {
+                    validPosition = false; // Nova posição não é válida, está muito próxima de uma posição ocupada
+                    break; // Sai do loop ao encontrar uma posição inválida
+                }
+            }
+
+            tries++;
+        } while (!validPosition && tries < maxTries);
+
+        if (!validPosition) {
+            // Se não encontrou posição válida após o número máximo de tentativas, retorna -1 ou outro valor indicando falha
+            return -1;
+        }
+
+        objectsPositions.add(x); // Adiciona a nova posição à lista de posições ocupadas
+
+        return x; // Retorna a posição válida
+    }
+
+
+
     public void keyPressed(KeyEvent e){
         int code = e.getKeyCode();
 
@@ -212,5 +281,9 @@ public class Player {
                 idleTime = System.currentTimeMillis();
             }
         }
+    }
+
+    public boolean isMan(){
+        return isMan;
     }
 }
